@@ -14,14 +14,19 @@ use Puli\Repository\Resource\FileResource;
 
 class KernelTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var Kernel
+     */
+    private $kernel;
+
     public function setUp()
     {
-        if (!defined('PULI_FACTORY_CLASS')) {
-            define('PULI_FACTORY_CLASS', PuliFactoryClass::class);
-        }
-
         PuliFactoryClass::$repository = new InMemoryRepository();
         PuliFactoryClass::$discovery = new InMemoryDiscovery();
+
+        $this->kernel = new Kernel();
+        // Mock the Puli factory
+        $this->kernel->setPuliFactoryClass(PuliFactoryClass::class);
     }
 
     /**
@@ -29,7 +34,7 @@ class KernelTest extends \PHPUnit_Framework_TestCase
      */
     public function creates_a_container()
     {
-        $this->assertInstanceOf('DI\Container', (new Kernel())->createContainer());
+        $this->assertInstanceOf('DI\Container', $this->kernel->createContainer());
     }
 
     /**
@@ -37,7 +42,7 @@ class KernelTest extends \PHPUnit_Framework_TestCase
      */
     public function registers_puli_repository()
     {
-        $container = (new Kernel())->createContainer();
+        $container = $this->kernel->createContainer();
         $this->assertInstanceOf(ResourceRepository::class, $container->get(ResourceRepository::class));
     }
 
@@ -46,7 +51,7 @@ class KernelTest extends \PHPUnit_Framework_TestCase
      */
     public function registers_puli_discovery()
     {
-        $container = (new Kernel())->createContainer();
+        $container = $this->kernel->createContainer();
         $this->assertInstanceOf(Discovery::class, $container->get(Discovery::class));
     }
 
@@ -58,7 +63,7 @@ class KernelTest extends \PHPUnit_Framework_TestCase
         $this->createPuliResource('/blog/config.php', __DIR__.'/Fixture/config.php');
         $this->bindPuliResource('/blog/config.php', Kernel::PULI_BINDING_NAME);
 
-        $container = (new Kernel())->createContainer();
+        $container = $this->kernel->createContainer();
         $this->assertEquals('bar', $container->get('foo'));
     }
 

@@ -27,6 +27,18 @@ class Kernel
     const PULI_BINDING_NAME = 'php-di/configuration';
 
     /**
+     * If null, defaults to the constant PULI_FACTORY_CLASS defined by Puli.
+     *
+     * @var string|null
+     */
+    private $puliFactoryClass;
+
+    public function setPuliFactoryClass($class)
+    {
+        $this->puliFactoryClass = $class;
+    }
+
+    /**
      * Configure and create a container using all configuration files registered under
      * the `php-di/configuration` binding type in Puli.
      *
@@ -34,12 +46,12 @@ class Kernel
      */
     public function createContainer()
     {
-        if (!defined('PULI_FACTORY_CLASS')) {
+        if (!$this->puliFactoryClass && !defined('PULI_FACTORY_CLASS')) {
             throw new \RuntimeException('Puli is not installed');
         }
 
         // Create Puli objects
-        $factoryClass = PULI_FACTORY_CLASS;
+        $factoryClass = $this->puliFactoryClass ?: PULI_FACTORY_CLASS;
         $factory = new $factoryClass();
         /** @var ResourceRepository $repository */
         $repository = $factory->createRepository();
