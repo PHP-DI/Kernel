@@ -12,9 +12,6 @@ use Puli\Repository\Api\ResourceRepository;
 use Puli\Repository\InMemoryRepository;
 use Puli\Repository\Resource\FileResource;
 
-/**
- * @covers \DI\Application\Kernel
- */
 class KernelTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
