@@ -1,0 +1,8 @@
+{
+    "version": "1.0",
+    "binding-types": {
+        "php-di/configuration": {
+            "description": "PHP-DI configuration file"
+        }
+    }
+}
