@@ -23,6 +23,6 @@
         "puli/discovery": "^1.0.0-beta8@beta"
     },
     "require-dev": {
-        "phpunit/phpunit": "^5.0"
+        "phpunit/phpunit": "^4.8"
     }
 }
