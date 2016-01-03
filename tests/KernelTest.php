@@ -32,7 +32,7 @@ class KernelTest extends \PHPUnit_Framework_TestCase
      */
     public function creates_a_container()
     {
-        $this->assertInstanceOf('DI\Container', (new Kernel)->createContainer());
+        $this->assertInstanceOf('DI\Container', (new Kernel())->createContainer());
     }
 
     /**
@@ -40,7 +40,7 @@ class KernelTest extends \PHPUnit_Framework_TestCase
      */
     public function registers_puli_repository()
     {
-        $container = (new Kernel)->createContainer();
+        $container = (new Kernel())->createContainer();
         $this->assertInstanceOf(ResourceRepository::class, $container->get(ResourceRepository::class));
     }
 
@@ -49,7 +49,7 @@ class KernelTest extends \PHPUnit_Framework_TestCase
      */
     public function registers_puli_discovery()
     {
-        $container = (new Kernel)->createContainer();
+        $container = (new Kernel())->createContainer();
         $this->assertInstanceOf(Discovery::class, $container->get(Discovery::class));
     }
 
@@ -58,10 +58,10 @@ class KernelTest extends \PHPUnit_Framework_TestCase
      */
     public function registers_module_configuration_files()
     {
-        $this->createPuliResource('/blog/config.php', __DIR__ . '/Fixture/config.php');
+        $this->createPuliResource('/blog/config.php', __DIR__.'/Fixture/config.php');
         $this->bindPuliResource('/blog/config.php', Kernel::PULI_BINDING_NAME);
 
-        $container = (new Kernel)->createContainer();
+        $container = (new Kernel())->createContainer();
         $this->assertEquals('bar', $container->get('foo'));
     }
 
