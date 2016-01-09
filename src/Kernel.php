@@ -6,11 +6,9 @@ use DI\Cache\ArrayCache;
 use DI\Container;
 use DI\ContainerBuilder;
 use Doctrine\Common\Cache\Cache;
-use Puli\Discovery\Api\Binding\Binding;
 use Puli\Discovery\Api\Discovery;
-use Puli\Discovery\Binding\ResourceBinding;
+use Puli\Repository\Api\Resource\FilesystemResource;
 use Puli\Repository\Api\ResourceRepository;
-use Puli\Repository\Resource\FileResource;
 
 /**
  * Application kernel.
@@ -20,22 +18,23 @@ use Puli\Repository\Resource\FileResource;
 class Kernel
 {
     /**
-     * Name of the binding for PHP-DI configuration files in Puli.
-     *
-     * @see http://docs.puli.io/en/latest/discovery/introduction.html
-     */
-    const PULI_BINDING_NAME = 'php-di/configuration';
-
-    /**
      * If null, defaults to the constant PULI_FACTORY_CLASS defined by Puli.
      *
      * @var string|null
      */
     private $puliFactoryClass;
 
-    public function setPuliFactoryClass($class)
+    /**
+     * @var string[]
+     */
+    private $modules;
+
+    /**
+     * @param array $modules The name of the modules to load.
+     */
+    public function __construct(array $modules = [])
     {
-        $this->puliFactoryClass = $class;
+        $this->modules = $modules;
     }
 
     /**
@@ -55,8 +54,6 @@ class Kernel
         $factory = new $factoryClass();
         /** @var ResourceRepository $repository */
         $repository = $factory->createRepository();
-        /** @var Discovery $discovery */
-        $discovery = $factory->createDiscovery($repository);
 
         $containerBuilder = new ContainerBuilder();
 
@@ -65,30 +62,29 @@ class Kernel
             $containerBuilder->setDefinitionCache($cache);
         }
 
-        // Discover and load all configuration files registered under `php-di/configuration` in Puli
-        $bindings = $discovery->findBindings(self::PULI_BINDING_NAME);
-        $bindings = array_filter($bindings, function (Binding $binding) {
-            return $binding instanceof ResourceBinding;
-        });
-        /** @var ResourceBinding[] $bindings */
-        foreach ($bindings as $binding) {
-            foreach ($binding->getResources() as $resource) {
-                if (!$resource instanceof FileResource) {
-                    throw new \RuntimeException(sprintf('Cannot load "%s": only file resources are supported', $resource->getName()));
-                }
-                $containerBuilder->addDefinitions($resource->getFilesystemPath());
-            }
-        }
-
         // Puli objects
         $containerBuilder->addDefinitions([
             ResourceRepository::class => $repository,
-            Discovery::class => $discovery,
+            Discovery::class => function () use ($factory, $repository) {
+                return $factory->createDiscovery($repository);
+            },
         ]);
+
+        foreach ($this->modules as $module) {
+            $this->loadModule($containerBuilder, $repository, $module);
+        }
 
         $this->configureContainerBuilder($containerBuilder);
 
         return $containerBuilder->build();
+    }
+
+    /**
+     * @param string $class
+     */
+    public function setPuliFactoryClass($class)
+    {
+        $this->puliFactoryClass = $class;
     }
 
     /**
@@ -106,5 +102,15 @@ class Kernel
      */
     protected function configureContainerBuilder(ContainerBuilder $containerBuilder)
     {
+    }
+
+    private function loadModule(ContainerBuilder $builder, ResourceRepository $resources, $module)
+    {
+        // Load all config files in the config/ directory
+        foreach ($resources->find('/'.$module.'/config/*.php') as $resource) {
+            if ($resource instanceof FilesystemResource) {
+                $builder->addDefinitions($resource->getFilesystemPath());
+            }
+        }
     }
 }
