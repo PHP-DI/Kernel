@@ -1,11 +1,6 @@
 {
     "version": "1.0",
     "name": "php-di/kernel",
-    "binding-types": {
-        "php-di/configuration": {
-            "description": "PHP-DI configuration file"
-        }
-    },
     "config": {
         "bootstrap-file": "vendor/autoload.php"
     },
