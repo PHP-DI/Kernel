@@ -107,7 +107,7 @@ class Kernel
     private function loadModule(ContainerBuilder $builder, ResourceRepository $resources, $module)
     {
         // Load all config files in the config/ directory
-        foreach ($resources->find('/' . $module . '/config/*.php') as $resource) {
+        foreach ($resources->find('/'.$module.'/config/*.php') as $resource) {
             if ($resource instanceof FilesystemResource) {
                 $builder->addDefinitions($resource->getFilesystemPath());
             }
