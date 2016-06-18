@@ -58,7 +58,7 @@ class KernelTest extends \PHPUnit_Framework_TestCase
      */
     public function loads_module_configs()
     {
-        PuliFactoryClass::$repository->add('/blog/config/config.php', new FileResource(__DIR__.'/Fixture/config.php'));
+        PuliFactoryClass::$repository->add('/blog/config/config.php', new FileResource(__DIR__.'/test-module/config.php'));
 
         $this->kernel = new Kernel([
             'blog',
@@ -67,5 +67,22 @@ class KernelTest extends \PHPUnit_Framework_TestCase
         $container = $this->kernel->createContainer();
 
         $this->assertEquals('bar', $container->get('foo'));
+    }
+
+    /**
+     * @test
+     */
+    public function loads_module_environment_config()
+    {
+        PuliFactoryClass::$repository->add('/blog/config/config.php', new FileResource(__DIR__.'/test-module/config.php'));
+        PuliFactoryClass::$repository->add('/blog/config/env/dev.php', new FileResource(__DIR__.'/test-module/env/dev.php'));
+
+        $this->kernel = new Kernel([
+            'blog',
+        ], 'dev');
+        $this->kernel->setPuliFactoryClass(PuliFactoryClass::class);
+        $container = $this->kernel->createContainer();
+
+        $this->assertEquals('biz', $container->get('foo'));
     }
 }

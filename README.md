@@ -68,3 +68,28 @@ puli.json
 ```
 
 When users install your package and tell the kernel to load the `blogpress` module, it will load all the files matching the Puli path `/blogpress/config/*.php` (i.e. `vendor/johndoe/blogpress/res/config/*.php` on the filesystem).
+
+### Environments
+
+Applications often need to behave differently according to the environment: `dev`, `prod`, etc.
+
+PHP-DI's Kernel let you write config for specific environments through a simple convention:
+
+```
+res/
+    config/
+        config.php
+        env/
+            dev.php
+            prod.php
+    ...
+```
+
+You can then instruct the environment to load:
+
+```php
+$kernel = new Kernel($modules, 'dev'); // dev environment
+$kernel = new Kernel($modules, 'prod'); // prod environment
+```
+
+Note that **environments are optional**.

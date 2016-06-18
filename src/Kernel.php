@@ -30,11 +30,18 @@ class Kernel
     private $modules;
 
     /**
-     * @param array $modules The name of the modules to load.
+     * @var string
      */
-    public function __construct(array $modules = [])
+    private $environment;
+
+    /**
+     * @param array $modules The name of the modules to load.
+     * @param string $environment Environment of the application (prod, dev, test, ...).
+     */
+    public function __construct(array $modules = [], $environment = 'prod')
     {
         $this->modules = $modules;
+        $this->environment = $environment;
     }
 
     /**
@@ -108,6 +115,15 @@ class Kernel
     {
         // Load all config files in the config/ directory
         foreach ($resources->find('/'.$module.'/config/*.php') as $resource) {
+            if ($resource instanceof FilesystemResource) {
+                $builder->addDefinitions($resource->getFilesystemPath());
+            }
+        }
+
+        // Load the environment-specific config if it exists
+        $envConfig = '/' . $module . '/config/env/' . $this->environment . '.php';
+        if ($resources->contains($envConfig)) {
+            $resource = $resources->get($envConfig);
             if ($resource instanceof FilesystemResource) {
                 $builder->addDefinitions($resource->getFilesystemPath());
             }
