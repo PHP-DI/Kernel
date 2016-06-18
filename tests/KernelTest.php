@@ -84,4 +84,23 @@ class KernelTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('biz', $container->get('foo'));
     }
+
+    /**
+     * @test
+     */
+    public function uses_provided_config()
+    {
+        $this->kernel = new Kernel;
+        $this->kernel->addConfig([
+            'foo' => 'bar',
+            'bar' => 'bar',
+        ]);
+        $this->kernel->addConfig([
+            'foo' => 'biz',
+        ]);
+        $container = $this->kernel->createContainer();
+
+        $this->assertEquals('biz', $container->get('foo'));
+        $this->assertEquals('bar', $container->get('bar'));
+    }
 }

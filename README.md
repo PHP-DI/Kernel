@@ -34,6 +34,18 @@ $kernel = new Kernel([
 $container = $kernel->createContainer();
 ```
 
+If you want to register configuration on the container, you can:
+
+- create a module - this is the recommended solution, read the next sections to learn more
+- or set the configuration directly - this is useful in micro-frameworks or micro-applications:
+
+    ```php
+    $kernel = new Kernel();
+    $kernel->addConfig([
+        'db.host' => 'localhost',
+    ]);
+    ```
+
 ### Installing a module
 
 To install a 3rd party module:
@@ -49,9 +61,9 @@ To install a 3rd party module:
 
 ### Creating a module
 
-1. choose a module name, for example `blogpress`
+1. choose a module name, usually `app` when writing an application, or anything else when writing a reusable module
 1. create a resource directory in your package, usually `res/`
-1. map it with Puli, for example `puli map /blogpress res`
+1. map it with Puli, for example `puli map /app res`
 1. create as many PHP-DI configuration files as needed in `res/config/`
 
 That's it. Here is what your package should look like:
@@ -67,7 +79,15 @@ composer.json
 puli.json
 ```
 
-When users install your package and tell the kernel to load the `blogpress` module, it will load all the files matching the Puli path `/blogpress/config/*.php` (i.e. `vendor/johndoe/blogpress/res/config/*.php` on the filesystem).
+When the module is registered in the kernel like this:
+
+```php
+$kernel = new Kernel([
+    'app',
+]);
+```
+
+all the files matching the Puli path `/blogpress/config/*.php` (i.e. `vendor/johndoe/blogpress/res/config/*.php` on the filesystem) will be loaded.
 
 ### Environments
 

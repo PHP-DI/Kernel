@@ -35,6 +35,11 @@ class Kernel
     private $environment;
 
     /**
+     * @var array
+     */
+    private $config = [];
+
+    /**
      * @param array $modules The name of the modules to load.
      * @param string $environment Environment of the application (prod, dev, test, ...).
      */
@@ -42,6 +47,20 @@ class Kernel
     {
         $this->modules = $modules;
         $this->environment = $environment;
+    }
+
+    /**
+     * Add container configuration.
+     *
+     * Use this method to define config easily when writing a micro-application.
+     * In bigger applications you are encouraged to define configuration in
+     * files using modules.
+     *
+     * @see http://php-di.org/doc/php-definitions.html
+     */
+    public function addConfig(array $config)
+    {
+        $this->config = array_merge($this->config, $config);
     }
 
     /**
@@ -79,6 +98,10 @@ class Kernel
 
         foreach ($this->modules as $module) {
             $this->loadModule($containerBuilder, $repository, $module);
+        }
+
+        if (!empty($this->config)) {
+            $containerBuilder->addDefinitions($this->config);
         }
 
         $this->configureContainerBuilder($containerBuilder);
