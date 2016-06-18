@@ -22,7 +22,7 @@ class Kernel
      *
      * @var string|null
      */
-    private $puliFactoryClass;
+    public static $puliFactoryClass;
 
     /**
      * @var string[]
@@ -52,12 +52,12 @@ class Kernel
      */
     public function createContainer()
     {
-        if (!$this->puliFactoryClass && !defined('PULI_FACTORY_CLASS')) {
+        if (!self::$puliFactoryClass && !defined('PULI_FACTORY_CLASS')) {
             throw new \RuntimeException('Puli is not installed');
         }
 
         // Create Puli objects
-        $factoryClass = $this->puliFactoryClass ?: PULI_FACTORY_CLASS;
+        $factoryClass = self::$puliFactoryClass ?: PULI_FACTORY_CLASS;
         $factory = new $factoryClass();
         /** @var ResourceRepository $repository */
         $repository = $factory->createRepository();
@@ -84,14 +84,6 @@ class Kernel
         $this->configureContainerBuilder($containerBuilder);
 
         return $containerBuilder->build();
-    }
-
-    /**
-     * @param string $class
-     */
-    public function setPuliFactoryClass($class)
-    {
-        $this->puliFactoryClass = $class;
     }
 
     /**

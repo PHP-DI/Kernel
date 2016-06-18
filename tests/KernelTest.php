@@ -22,9 +22,10 @@ class KernelTest extends \PHPUnit_Framework_TestCase
         PuliFactoryClass::$repository = new InMemoryRepository();
         PuliFactoryClass::$discovery = new InMemoryDiscovery();
 
-        $this->kernel = new Kernel();
         // Mock the Puli factory
-        $this->kernel->setPuliFactoryClass(PuliFactoryClass::class);
+        Kernel::$puliFactoryClass = PuliFactoryClass::class;
+
+        $this->kernel = new Kernel();
     }
 
     /**
@@ -63,7 +64,6 @@ class KernelTest extends \PHPUnit_Framework_TestCase
         $this->kernel = new Kernel([
             'blog',
         ]);
-        $this->kernel->setPuliFactoryClass(PuliFactoryClass::class);
         $container = $this->kernel->createContainer();
 
         $this->assertEquals('bar', $container->get('foo'));
@@ -80,7 +80,6 @@ class KernelTest extends \PHPUnit_Framework_TestCase
         $this->kernel = new Kernel([
             'blog',
         ], 'dev');
-        $this->kernel->setPuliFactoryClass(PuliFactoryClass::class);
         $container = $this->kernel->createContainer();
 
         $this->assertEquals('biz', $container->get('foo'));
