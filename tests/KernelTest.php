@@ -57,6 +57,15 @@ class KernelTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function registers_puli_factory()
+    {
+        $container = $this->kernel->createContainer();
+        $this->assertTrue($container->has('puli.factory'));
+    }
+
+    /**
+     * @test
+     */
     public function loads_module_configs()
     {
         PuliFactoryClass::$repository->add('/blog/config/config.php', new FileResource(__DIR__.'/test-module/config.php'));

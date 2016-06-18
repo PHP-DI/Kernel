@@ -6,6 +6,7 @@ use DI\Cache\ArrayCache;
 use DI\Container;
 use DI\ContainerBuilder;
 use Doctrine\Common\Cache\Cache;
+use Interop\Container\ContainerInterface;
 use Puli\Discovery\Api\Discovery;
 use Puli\Repository\Api\Resource\FilesystemResource;
 use Puli\Repository\Api\ResourceRepository;
@@ -77,9 +78,9 @@ class Kernel
 
         // Create Puli objects
         $factoryClass = self::$puliFactoryClass ?: PULI_FACTORY_CLASS;
-        $factory = new $factoryClass();
+        $puli = new $factoryClass();
         /** @var ResourceRepository $repository */
-        $repository = $factory->createRepository();
+        $repository = $puli->createRepository();
 
         $containerBuilder = new ContainerBuilder();
 
@@ -90,9 +91,11 @@ class Kernel
 
         // Puli objects
         $containerBuilder->addDefinitions([
+            'puli.factory' => $puli,
             ResourceRepository::class => $repository,
-            Discovery::class => function () use ($factory, $repository) {
-                return $factory->createDiscovery($repository);
+            Discovery::class => function (ContainerInterface $c) {
+                $puli = $c->get('puli.factory');
+                return $puli->createDiscovery($c->get(ResourceRepository::class));
             },
         ]);
 
