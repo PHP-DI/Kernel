@@ -40,7 +40,7 @@ class Kernel
     private $config = [];
 
     /**
-     * @param array $modules The name of the modules to load.
+     * @param array  $modules     The name of the modules to load.
      * @param string $environment Environment of the application (prod, dev, test, ...).
      */
     public function __construct(array $modules = [], $environment = 'prod')
@@ -136,7 +136,7 @@ class Kernel
         }
 
         // Load the environment-specific config if it exists
-        $envConfig = '/' . $module . '/config/env/' . $this->environment . '.php';
+        $envConfig = '/'.$module.'/config/env/'.$this->environment.'.php';
         if ($resources->contains($envConfig)) {
             $resource = $resources->get($envConfig);
             if ($resource instanceof FilesystemResource) {
