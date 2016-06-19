@@ -90,7 +90,7 @@ class KernelTest extends \PHPUnit_Framework_TestCase
      */
     public function uses_provided_config()
     {
-        $this->kernel = new Kernel;
+        $this->kernel = new Kernel();
         $this->kernel->addConfig([
             'foo' => 'bar',
             'bar' => 'bar',
