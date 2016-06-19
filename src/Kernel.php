@@ -95,6 +95,7 @@ class Kernel
             ResourceRepository::class => $repository,
             Discovery::class => function (ContainerInterface $c) {
                 $puli = $c->get('puli.factory');
+
                 return $puli->createDiscovery($c->get(ResourceRepository::class));
             },
         ]);
