@@ -22,6 +22,6 @@
         "mindplay/composer-locator": "^2.1"
     },
     "require-dev": {
-        "phpunit/phpunit": "^5.0"
+        "phpunit/phpunit": "^5.7"
     }
 }
