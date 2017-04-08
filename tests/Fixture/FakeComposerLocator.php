@@ -13,10 +13,11 @@ class FakeComposerLocator extends \ComposerLocator
     public static function getPath($name)
     {
         $name = strtolower($name);
-        if (! isset(self::$paths[$name])) {
+        if (!isset(self::$paths[$name])) {
             throw new RuntimeException("Composer package not found: {$name}");
         }
-        return self::getRootPath() . self::$paths[$name];
+
+        return self::getRootPath().self::$paths[$name];
     }
 
     public static function getRootPath()
@@ -39,7 +40,7 @@ class FakeComposerLocator extends \ComposerLocator
         $paths = [];
 
         foreach (self::$paths as $name => $path) {
-            $paths[$name] = self::getRootPath() . $path;
+            $paths[$name] = self::getRootPath().$path;
         }
 
         return $paths;
