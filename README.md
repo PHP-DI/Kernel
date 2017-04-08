@@ -17,7 +17,7 @@ composer require php-di/kernel
 
 Requirements:
 
-- PHP 5.5 or greater
+- PHP 7.0 or greater
 - [Puli CLI tool](http://docs.puli.io/en/latest/installation.html#installing-the-puli-cli)
 
 ## Usage
