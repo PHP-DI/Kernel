@@ -1,13 +1,13 @@
 # PHP-DI application kernel
 
-Kernel for applications built with [PHP-DI](http://php-di.org) and [Puli](http://puli.io) with built-in support for PHP-DI modules.
+Kernel for building modules with [PHP-DI](http://php-di.org) and [Composer-Locator](https://github.com/mindplay-dk/composer-locator).
 
 [![Build Status](https://img.shields.io/travis/PHP-DI/Kernel.svg?style=flat-square)](https://travis-ci.org/PHP-DI/Kernel)
 [![Coverage Status](https://img.shields.io/coveralls/PHP-DI/Kernel/master.svg?style=flat-square)](https://coveralls.io/r/PHP-DI/Kernel?branch=master)
 
 ## Introduction
 
-TODO
+The Kernel let's you build an application based on PHP-DI modules.
 
 ## Installation
 
@@ -15,20 +15,15 @@ TODO
 composer require php-di/kernel
 ```
 
-Requirements:
-
-- PHP 5.5 or greater
-- [Puli CLI tool](http://docs.puli.io/en/latest/installation.html#installing-the-puli-cli)
-
 ## Usage
 
 The kernel's role is to create the container. It does so by registering all the configuration files of the modules we ask it to load:
 
 ```php
 $kernel = new Kernel([
-    'twig',
-    'doctrine',
-    'app',
+    'twig/twig',
+    'doctrine/dbal',
+    'vendor/app',
 ]);
 
 $container = $kernel->createContainer();
@@ -55,15 +50,14 @@ To install a 3rd party module:
 
     ```php
     $kernel = new Kernel([
-        'twig',
+        'twig/twig',
     ]);
     ```
 
 ### Creating a module
 
-1. choose a module name, usually `app` when writing an application, or anything else when writing a reusable module
+1. the Composer package name is the module name
 1. create a resource directory in your package, usually `res/`
-1. map it with Puli, for example `puli map /app res`
 1. create as many PHP-DI configuration files as needed in `res/config/`
 
 That's it. Here is what your package should look like:
@@ -76,18 +70,17 @@ res/
 src/
     ...
 composer.json
-puli.json
 ```
 
 When the module is registered in the kernel like this:
 
 ```php
 $kernel = new Kernel([
-    'app',
+    'foo/bar',
 ]);
 ```
 
-all the files matching the Puli path `/blogpress/config/*.php` (i.e. `vendor/johndoe/blogpress/res/config/*.php` on the filesystem) will be loaded.
+all the files in `vendor/foo/bar/res/config/*.php` will be loaded.
 
 ### Environments
 
