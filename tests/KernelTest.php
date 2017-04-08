@@ -2,15 +2,12 @@
 
 namespace DI\Kernel\Test;
 
+use DI\Container;
 use DI\Kernel\Kernel;
-use DI\Kernel\Test\Fixture\PuliFactoryClass;
-use Puli\Discovery\Api\Discovery;
-use Puli\Discovery\InMemoryDiscovery;
-use Puli\Repository\Api\ResourceRepository;
-use Puli\Repository\InMemoryRepository;
-use Puli\Repository\Resource\FileResource;
+use DI\Kernel\Test\Fixture\FakeComposerLocator;
+use PHPUnit\Framework\TestCase;
 
-class KernelTest extends \PHPUnit_Framework_TestCase
+class KernelTest extends TestCase
 {
     /**
      * @var Kernel
@@ -19,84 +16,50 @@ class KernelTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        PuliFactoryClass::$repository = new InMemoryRepository();
-        PuliFactoryClass::$discovery = new InMemoryDiscovery();
-
-        // Mock the Puli factory
-        Kernel::$puliFactoryClass = PuliFactoryClass::class;
+        // Mock the Composer locator
+        Kernel::$locatorClass = FakeComposerLocator::class;
+        FakeComposerLocator::$rootPath = __DIR__;
 
         $this->kernel = new Kernel();
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function creates_a_container()
     {
-        $this->assertInstanceOf('DI\Container', $this->kernel->createContainer());
+        self::assertInstanceOf(Container::class, $this->kernel->createContainer());
     }
 
-    /**
-     * @test
-     */
-    public function registers_puli_repository()
-    {
-        $container = $this->kernel->createContainer();
-        $this->assertInstanceOf(ResourceRepository::class, $container->get(ResourceRepository::class));
-    }
-
-    /**
-     * @test
-     */
-    public function registers_puli_discovery()
-    {
-        $container = $this->kernel->createContainer();
-        $this->assertInstanceOf(Discovery::class, $container->get(Discovery::class));
-    }
-
-    /**
-     * @test
-     */
-    public function registers_puli_factory()
-    {
-        $container = $this->kernel->createContainer();
-        $this->assertTrue($container->has('puli.factory'));
-    }
-
-    /**
-     * @test
-     */
+    /** @test */
     public function loads_module_configs()
     {
-        PuliFactoryClass::$repository->add('/blog/config/config.php', new FileResource(__DIR__.'/test-module/config.php'));
+        FakeComposerLocator::$paths = [
+            'php-di/blog' => '/test-module',
+        ];
 
         $this->kernel = new Kernel([
-            'blog',
+            'php-di/blog',
         ]);
         $container = $this->kernel->createContainer();
 
         $this->assertEquals('bar', $container->get('foo'));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function loads_module_environment_config()
     {
-        PuliFactoryClass::$repository->add('/blog/config/config.php', new FileResource(__DIR__.'/test-module/config.php'));
-        PuliFactoryClass::$repository->add('/blog/config/env/dev.php', new FileResource(__DIR__.'/test-module/env/dev.php'));
+        FakeComposerLocator::$paths = [
+            'php-di/blog' => '/test-module',
+        ];
 
         $this->kernel = new Kernel([
-            'blog',
+            'php-di/blog',
         ], 'dev');
         $container = $this->kernel->createContainer();
 
         $this->assertEquals('biz', $container->get('foo'));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function uses_provided_config()
     {
         $this->kernel = new Kernel();
