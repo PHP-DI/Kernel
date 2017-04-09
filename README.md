@@ -1,6 +1,6 @@
 # PHP-DI application kernel
 
-Kernel for building modules with [PHP-DI](http://php-di.org) and [Composer-Locator](https://github.com/mindplay-dk/composer-locator).
+Kernel for building modules with [PHP-DI](http://php-di.org).
 
 [![Build Status](https://img.shields.io/travis/PHP-DI/Kernel.svg?style=flat-square)](https://travis-ci.org/PHP-DI/Kernel)
 [![Coverage Status](https://img.shields.io/coveralls/PHP-DI/Kernel/master.svg?style=flat-square)](https://coveralls.io/r/PHP-DI/Kernel?branch=master)
