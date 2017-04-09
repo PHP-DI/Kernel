@@ -19,7 +19,7 @@
         "php": "^7.0",
         "php-di/php-di": "^5.4",
         "doctrine/cache": "^1.6",
-        "mindplay/composer-locator": "^2.1.1"
+        "mindplay/composer-locator": "^2.1.2"
     },
     "require-dev": {
         "phpunit/phpunit": "^5.7"
