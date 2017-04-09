@@ -82,6 +82,25 @@ $kernel = new Kernel([
 
 all the files in `vendor/foo/bar/res/config/*.php` will be loaded.
 
+**Your main application will probably contain configuration files too: it is also a module**. Since it may not have a package name in `composer.json` you will need to set one. You can name it `app`, for example:
+
+```json
+{
+    "name": "app",
+    "require": {
+        // ...
+    }
+}
+```
+
+That way you can let the kernel load your application as a module:
+
+```php
+$kernel = new Kernel([
+    'app',
+]);
+```
+
 ### Environments
 
 Applications often need to behave differently according to the environment: `dev`, `prod`, etc.
