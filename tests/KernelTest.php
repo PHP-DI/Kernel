@@ -79,7 +79,7 @@ class KernelTest extends TestCase
     /** @test */
     public function exposes_the_environment()
     {
-        $this->kernel = new Kernel;
+        $this->kernel = new Kernel();
 
         $this->assertEquals('prod', $this->kernel->getEnvironment());
     }
