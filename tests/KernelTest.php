@@ -75,4 +75,12 @@ class KernelTest extends TestCase
         $this->assertEquals('biz', $container->get('foo'));
         $this->assertEquals('bar', $container->get('bar'));
     }
+
+    /** @test */
+    public function exposes_the_environment()
+    {
+        $this->kernel = new Kernel;
+
+        $this->assertEquals('prod', $this->kernel->getEnvironment());
+    }
 }

@@ -76,6 +76,11 @@ class Kernel
         return $containerBuilder->build();
     }
 
+    public function getEnvironment() : string
+    {
+        return $this->environment;
+    }
+
     /**
      * Override this method to customize the container builder before it is used.
      */
