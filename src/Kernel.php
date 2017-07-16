@@ -2,11 +2,8 @@
 
 namespace DI\Kernel;
 
-use ComposerLocator;
-use DI\Cache\ArrayCache;
 use DI\Container;
 use DI\ContainerBuilder;
-use Doctrine\Common\Cache\Cache;
 
 /**
  * Application kernel.
@@ -66,11 +63,6 @@ class Kernel
     {
         $containerBuilder = new ContainerBuilder();
 
-        $cache = $this->getContainerCache();
-        if ($cache) {
-            $containerBuilder->setDefinitionCache($cache);
-        }
-
         foreach ($this->modules as $module) {
             $this->loadModule($containerBuilder, $module);
         }
@@ -82,16 +74,6 @@ class Kernel
         $this->configureContainerBuilder($containerBuilder);
 
         return $containerBuilder->build();
-    }
-
-    /**
-     * Override this method to configure the cache to use for container definitions.
-     *
-     * @return Cache|null
-     */
-    protected function getContainerCache()
-    {
-        return new ArrayCache();
     }
 
     /**
